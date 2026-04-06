@@ -1,6 +1,8 @@
 import { SportsEvent, TVListing } from "@/types";
 
-const API_KEY = process.env.NEXT_PUBLIC_SPORTSDB_KEY || "1";
+const API_KEY = process.env.NEXT_PUBLIC_SPORTSDB_KEY && process.env.NEXT_PUBLIC_SPORTSDB_KEY.length > 0
+  ? process.env.NEXT_PUBLIC_SPORTSDB_KEY
+  : "3";
 const BASE = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
 
 export async function searchEvents(query: string): Promise<SportsEvent[]> {
