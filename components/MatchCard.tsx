@@ -4,6 +4,7 @@ import { SportsEvent } from "@/types";
 interface MatchCardProps {
   match: SportsEvent;
   compact?: boolean;
+  leagueId?: string;
 }
 
 function formatDate(dateStr: string): string {
@@ -28,13 +29,25 @@ function formatTime(timeStr: string): string {
   return timeStr.substring(0, 5);
 }
 
-export default function MatchCard({ match, compact }: MatchCardProps) {
+function buildHref(match: SportsEvent, leagueId?: string): string {
+  const base = `/match/${match.idEvent}`;
+  const params = new URLSearchParams();
+  if (leagueId) params.set("league", leagueId);
+  params.set("name", match.strEvent);
+  params.set("leagueName", match.strLeague);
+  params.set("date", match.dateEvent);
+  if (match.strTime) params.set("time", match.strTime);
+  return `${base}?${params.toString()}`;
+}
+
+export default function MatchCard({ match, compact, leagueId }: MatchCardProps) {
   const hasScore = match.intHomeScore !== null && match.intAwayScore !== null;
+  const href = buildHref(match, leagueId);
 
   if (compact) {
     return (
       <Link
-        href={`/match/${match.idEvent}`}
+        href={href}
         className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-white/5 transition-colors group"
       >
         <div className="flex-1 min-w-0">
@@ -60,7 +73,7 @@ export default function MatchCard({ match, compact }: MatchCardProps) {
 
   return (
     <Link
-      href={`/match/${match.idEvent}`}
+      href={href}
       className="block p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-emerald-500/20 transition-all group"
     >
       <div className="flex items-center justify-between mb-3">

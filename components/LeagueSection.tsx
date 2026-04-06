@@ -93,7 +93,7 @@ export default function LeagueSection({ league }: LeagueSectionProps) {
       ) : (
         <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] divide-y divide-white/[0.04] overflow-hidden">
           {matches.map((match) => (
-            <MatchCard key={match.idEvent} match={match} compact />
+            <MatchCard key={match.idEvent} match={match} compact leagueId={league.id} />
           ))}
         </div>
       )}
