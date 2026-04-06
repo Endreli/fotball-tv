@@ -11,3 +11,21 @@ export async function getTVListings(eventId: string): Promise<TVListing[]> {
   const data = await res.json();
   return data.tvevent || [];
 }
+
+export async function getLeagueRound(
+  leagueId: string,
+  round: number,
+  season: string
+): Promise<SportsEvent[]> {
+  const res = await fetch(
+    `/api/round?id=${leagueId}&r=${round}&s=${encodeURIComponent(season)}`
+  );
+  const data = await res.json();
+  return data.events || [];
+}
+
+export async function getNextLeagueEvents(leagueId: string): Promise<SportsEvent[]> {
+  const res = await fetch(`/api/next?id=${leagueId}`);
+  const data = await res.json();
+  return data.events || [];
+}
