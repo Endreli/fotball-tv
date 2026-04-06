@@ -9,16 +9,13 @@ interface LeagueSectionProps {
   league: League;
 }
 
-// Approximate current round based on date
 function guessCurrentRound(leagueId: string): number {
   const now = new Date();
-  // Eliteserien starts in March, ~1 round per week
   if (leagueId === "4358") {
     const seasonStart = new Date("2026-03-14");
     const weeksDiff = Math.floor((now.getTime() - seasonStart.getTime()) / (7 * 24 * 60 * 60 * 1000));
     return Math.max(1, Math.min(weeksDiff + 1, 30));
   }
-  // European leagues: season starts August, ~1 round per week
   const seasonStart = new Date("2025-08-15");
   const weeksDiff = Math.floor((now.getTime() - seasonStart.getTime()) / (7 * 24 * 60 * 60 * 1000));
   return Math.max(1, Math.min(weeksDiff + 1, 38));
@@ -32,37 +29,40 @@ export default function LeagueSection({ league }: LeagueSectionProps) {
     async function fetchMatches() {
       setIsLoading(true);
       try {
-        // Try next events first (gives upcoming matches)
-        const nextEvents = await getNextLeagueEvents(league.id);
+        // Strategy: try multiple rounds around estimated current round
+        const round = guessCurrentRound(league.id);
+        const season = CURRENT_SEASONS[league.id] || "2025-2026";
 
-        if (nextEvents.length > 1) {
-          setMatches(nextEvents);
-        } else {
-          // Fallback: fetch by round
-          const round = guessCurrentRound(league.id);
-          const season = CURRENT_SEASONS[league.id] || "2025-2026";
+        // Fetch 3 rounds in parallel for better coverage
+        const rounds = await Promise.all([
+          getLeagueRound(league.id, Math.max(1, round - 1), season),
+          getLeagueRound(league.id, round, season),
+          getLeagueRound(league.id, round + 1, season),
+        ]);
 
-          // Try current round and next round
-          const [current, next] = await Promise.all([
-            getLeagueRound(league.id, round, season),
-            getLeagueRound(league.id, round + 1, season),
-          ]);
+        const allMatches = rounds.flat();
 
+        if (allMatches.length > 0) {
           const now = new Date();
-          const allMatches = [...current, ...next];
+          now.setHours(0, 0, 0, 0);
 
-          // Sort: upcoming first, then past
-          const sorted = allMatches.sort((a, b) => {
-            const dateA = new Date(a.dateEvent);
-            const dateB = new Date(b.dateEvent);
-            const aUpcoming = dateA >= now;
-            const bUpcoming = dateB >= now;
-            if (aUpcoming && !bUpcoming) return -1;
-            if (!aUpcoming && bUpcoming) return 1;
-            return dateA.getTime() - dateB.getTime();
+          // Filter to upcoming + recently played (last 3 days)
+          const threeDaysAgo = new Date(now);
+          threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+          const relevant = allMatches.filter((m) => {
+            const d = new Date(m.dateEvent);
+            return d >= threeDaysAgo;
           });
 
-          setMatches(sorted.slice(0, 10));
+          // Sort by date
+          relevant.sort((a, b) => new Date(a.dateEvent).getTime() - new Date(b.dateEvent).getTime());
+
+          setMatches(relevant.slice(0, 10));
+        } else {
+          // Last resort: try nextleague endpoint
+          const nextEvents = await getNextLeagueEvents(league.id);
+          setMatches(nextEvents.slice(0, 10));
         }
       } catch {
         setMatches([]);
@@ -84,7 +84,7 @@ export default function LeagueSection({ league }: LeagueSectionProps) {
 
       {isLoading ? (
         <div className="space-y-2">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {[0, 1, 2].map((i) => (
             <div key={i} className="h-14 rounded-lg bg-white/[0.03] animate-pulse" />
           ))}
         </div>
