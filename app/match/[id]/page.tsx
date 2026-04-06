@@ -160,7 +160,7 @@ export default function MatchPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           <p className="text-gray-400 font-medium mb-1">Ingen TV-info tilgjengelig</p>
-          <p className="text-gray-600 text-sm">Vi har ikke TV-data for denne kampen enna.</p>
+          <p className="text-gray-600 text-sm">Vi har ikke TV-data for denne kampen ennå.</p>
         </div>
       )}
 
@@ -179,7 +179,7 @@ export default function MatchPage() {
 
           {filteredData.length === 0 && (
             <div className="text-center py-12 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-              <p className="text-gray-500">Velg minst ett land for a se TV-kanaler.</p>
+              <p className="text-gray-500">Velg minst ett land for å se TV-kanaler.</p>
             </div>
           )}
 
@@ -225,7 +225,7 @@ export default function MatchPage() {
 
           {Object.keys(staticChannels).length > 0 && (
             <p className="text-xs text-gray-600 mt-8 text-center">
-              Kanaler merket &quot;typisk&quot; er basert pa kjente rettigheter og kan variere per kamp.
+              Kanaler merket &quot;typisk&quot; er basert på kjente rettigheter og kan variere per kamp.
             </p>
           )}
         </>

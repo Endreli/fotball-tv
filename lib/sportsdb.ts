@@ -19,22 +19,9 @@ export async function getTVListings(eventId: string): Promise<TVListing[]> {
   return data.tvevent || [];
 }
 
-export async function getLeagueRound(
-  leagueId: string,
-  round: number,
-  season: string
-): Promise<SportsEvent[]> {
-  const res = await fetch(
-    `${BASE}/eventsround.php?id=${leagueId}&r=${round}&s=${encodeURIComponent(season)}`
-  );
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.events || [];
-}
-
-export async function getNextLeagueEvents(leagueId: string): Promise<SportsEvent[]> {
-  const res = await fetch(`${BASE}/eventsnextleague.php?id=${leagueId}`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.events || [];
+// Fetch all league fixtures from our cached API route
+export async function getAllFixtures(): Promise<Record<string, SportsEvent[]>> {
+  const res = await fetch("/api/fixtures");
+  if (!res.ok) return {};
+  return res.json();
 }

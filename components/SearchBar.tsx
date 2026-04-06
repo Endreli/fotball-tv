@@ -29,7 +29,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder='Sok etter lag eller kamp, f.eks. "Arsenal Liverpool"'
+          placeholder='Søk etter lag eller kamp, f.eks. &quot;Arsenal Liverpool&quot;'
           className="w-full pl-12 pr-24 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 text-base transition-all"
         />
         <button
@@ -40,7 +40,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
           {isLoading ? (
             <span className="inline-block w-4 h-4 border-2 border-[#0a0f1a] border-t-transparent rounded-full animate-spin" />
           ) : (
-            "Sok"
+            "Søk"
           )}
         </button>
       </div>

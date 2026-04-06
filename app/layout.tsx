@@ -9,8 +9,8 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "KampSentralen — Finn kampen din pa TV",
-  description: "Se hvilken TV-kanal fotballkampen sendes pa. Premier League, Eliteserien, Champions League og mer.",
+  title: "KampSentralen — Finn kampen din på TV",
+  description: "Se hvilken TV-kanal fotballkampen sendes på. Premier League, Eliteserien, Champions League og mer.",
 };
 
 export default function RootLayout({
