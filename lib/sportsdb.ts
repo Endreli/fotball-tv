@@ -25,3 +25,19 @@ export async function getAllFixtures(): Promise<Record<string, SportsEvent[]>> {
   if (!res.ok) return {};
   return res.json();
 }
+
+export interface TVKampenChannel {
+  title: string;
+  league: string;
+  date: string;
+  time: string;
+  channels: string[];
+}
+
+// Fetch real TV channel data from TVkampen via our API route
+export async function getTVKampenChannels(date: string): Promise<TVKampenChannel[]> {
+  const res = await fetch(`/api/tvkampen?date=${date}`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.fixtures || [];
+}
